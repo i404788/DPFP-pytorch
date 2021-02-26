@@ -17,6 +17,9 @@ if __name__ == "__main__":
     print('\n')
     macs, params = profile(m, inputs=(x,W))
     true_macs, macs, params = clever_format([true_macs, macs, params], "%.3f")
+
+    print(f'For DPFPCell-{nu}, dim=128:')
+    print(f'Input shapes: x={tuple(x.shape)}, W={tuple(W.shape)}')
     print("Macs: %s (alt. %s), Params: %s" % (true_macs, macs, params))
 
     def print_params(model):
