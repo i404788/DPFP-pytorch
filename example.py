@@ -1,12 +1,12 @@
 import torch
-from dpfp_pytorch import SelfAttention
+from dpfp_pytorch import DPFPCell
 
-m = SelfAttention(128)
-W = torch.randn(1, 256, 256)
-x = torch.randn(1, 128)
+nu = 1
+dim = 128
+m = DPFPCell(dim, nu=nu)
+W = torch.randn(1, 2 * nu * dim, 2 * nu * dim)
+x = torch.randn(1, dim)
 
-
-print(x.shape, W.shape)
 x, W = m.forward(x, W)
 x, W = m.forward(x, W)
 

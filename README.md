@@ -9,6 +9,22 @@ $ pip install dpfp-pytorch
 ```
 
 # Usage
+## DPFP-v 'Cell'
+```py3
+import torch
+from dpfp_pytorch import DPFPCell
+
+nu = 1
+dim = 128
+
+m = DPFPCell(dim, nu=nu)
+W = torch.randn(1, 2 * nu * dim, 2 * nu * dim)
+x = torch.randn(1, dim)
+
+x, W = m.forward(x, W)
+```
+
+## Projection Mechanism
 ```py3
 from dpfp_pytorch import dpfp
 import torch
@@ -20,7 +36,6 @@ x = dpfp(features)
 
 x = dpfp(features, nu=2)
 # torch.Size([4, 3, 256, 1024])
-
 ```
 
 
