@@ -16,6 +16,7 @@ class SelfAttention(nn.Module):
         assert dim % heads == 0, 'dimension must be divisible by number of heads'
         dim_head = default(dim_head, dim // heads)
         inner_dim = dim_head * heads
+        self.d = inner_dim
 
         self.to_q = nn.Linear(dim, inner_dim)
         self.to_k = nn.Linear(dim, inner_dim)
@@ -26,10 +27,11 @@ class SelfAttention(nn.Module):
 
         self.dropout = nn.Dropout(dropout)
 
-    def forward(self, x, context=None)
-        b, n, _, h, gh = *x.shape, self.heads, self.global_heads
-
+    def forward(self, x, W, context=None)
+        b, _, n = x.shape
         context = context or x
+
+        # W = torch.zeros(b, d, d)
 
         # k(i),v(i),q(i)=Wkx(i),Wvx(i),Wqx(i)
         q, k, v = self.to_q(x), self.to_k(context), self.to_v(context)
@@ -37,6 +39,14 @@ class SelfAttention(nn.Module):
         # β(i)=σ(Wβx(i))
         beta = sigmoid(self.to_beta(x))
 
-        # v(i)=W(i−1)φ(k(i))
-        # v =   
+        #  ̄v(i)=W(i−1)φ(k(i))
+        vo = W * dpfp(k)
+
+        # W(i−1)+β(i)(v(i)− ̄v(i))⊗ φ(k(i))
+        W = W + torch.einsum('bp, bqr->bpqr', beta * (v - vo), dpfp(k))
+
+        # y(i)=W(i)φ(q(i)
+        return W * dpfp(q), W
+            
+
 
