@@ -11,3 +11,4 @@ x, W = m.forward(x, W)
 x, W = m.forward(x, W)
 
 print(x.shape, W.shape)
+

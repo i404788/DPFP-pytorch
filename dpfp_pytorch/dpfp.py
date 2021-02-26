@@ -36,10 +36,7 @@ class DPFPCell(nn.Module):
         self.dropout = nn.Dropout(dropout)
 
     def forward(self, x, W, context=None):
-        b, n = x.shape
         context = context or x
-
-        # W = torch.zeros(b, ddot, ddot)
 
         # k(i),v(i),q(i)=Wkx(i),Wvx(i),Wqx(i)
         q, k, v = self.to_q(x), self.to_k(context), self.to_v(context)
