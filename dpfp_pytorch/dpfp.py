@@ -7,6 +7,9 @@ from functools import partial
 
 identity = lambda x: x
 
+if torch.cuda.is_available():
+    from .cuda import fast_weight_memory
+
 def dpfp(x, nu=1):
     x = cat([relu(x), relu(-x)], dim=-1)
     x_rolled = cat([x.roll(shifts=j, dims=-1) for j in range(1, nu+1)], dim=-1)
@@ -51,7 +54,7 @@ class DPFPCell(nn.Module):
             
 
 class DPFPAttention(nn.Module):
-    def __init__(self, dim, dim_head=64, heads=8, nu=1, dropout=0., layernorm=False, prenorm=False):
+    def __init__(self, dim, dim_head=64, heads=8, nu=1, dropout=0., layernorm=True, prenorm=False):
         super().__init__()
         self.ln = nn.LayerNorm(dim) if layernorm else identity
         self.prenorm = prenorm
@@ -93,9 +96,8 @@ class DPFPAttention(nn.Module):
         
         # Apply update function
         if 'cuda' in str(x.device):
-            raise NotImplementedError("CUDA coming soon")
-            # TODO: copy fast_weight_memory cuda
-            pass
+            # Optimized cuda kernel
+            out = fast_weight_memory(q, k, v, beta, W)
         else:
             # Autograd-naive version
             vo = torch.einsum('bhsd, bhns -> bhnd', W, k)
@@ -113,7 +115,7 @@ class DPFPAttention(nn.Module):
         if not self.prenorm:
             out = self.ln(out)
 
-        return out
+        return out, W.clone().detach()
 
 
 

@@ -12,6 +12,20 @@ $ pip install dpfp-pytorch
 ```
 
 # Usage
+## DPFP-v Attention Module
+```py3
+import torch
+from dpfp_pytorch import DPFPAttention
+
+dim = 128
+batch = 1
+m = DPFPAttention(dim)
+x = torch.randn(batch, 16, dim) # b, seq, dim
+W = torch.zeros(m.get_memory_shape(batch), device=x.device)
+
+x, W = m.forward(x, W)
+```
+
 ## DPFP-v 'Cell'
 ```py3
 import torch
@@ -42,7 +56,9 @@ x = dpfp(features, nu=2)
 ```
 
 
-# Cite the authors
+# Citations
+The cuda module is adapted from the original research repository: https://github.com/IDSIA/lmtool-fwms
+
 ```bibtex
 @misc{schlag2021linear,
       title={Linear Transformers Are Secretly Fast Weight Memory Systems}, 
