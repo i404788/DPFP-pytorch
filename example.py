@@ -15,6 +15,7 @@ print(x.shape, W.shape)
 
 m = DPFPAttention(dim)
 x = torch.randn(1, 16, dim)
-m.forward(x)
+W = torch.zeros(m.get_memory_shape(1), device=x.device)
+m.forward(x, W)
 
 print(x.shape)

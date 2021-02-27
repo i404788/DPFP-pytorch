@@ -66,6 +66,10 @@ class DPFPAttention(nn.Module):
         self.drop = nn.Dropout(dropout)
         self.dpfp = partial(dpfp, nu=nu)
         self.scale = 1 / (dim_head ** 0.5)
+        self.sample_shape = (self.heads, 2 * self.nu * self.dim_head, self.dim_head)
+
+    def get_memory_shape(self, batch_size):
+        return (batch_size,) + self.sample_shape
 
     def forward(self, x, W=None, mask=None):
         b, n, _ = x.shape
@@ -87,9 +91,6 @@ class DPFPAttention(nn.Module):
         q, k = map(self.dpfp, (q, k))
         q, k = map(lambda t: t / t.sum(-1, keepdim=True), (q, k)) # Normalize (from reference impl)
         
-        if not W:
-            W = torch.zeros(b, self.heads, 2 * self.nu * self.dim_head, self.dim_head, device=x.device)
-
         # Apply update function
         if 'cuda' in str(x.device):
             raise NotImplementedError("CUDA coming soon")
