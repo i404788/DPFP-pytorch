@@ -1,5 +1,5 @@
 import torch
-from dpfp_pytorch import DPFPCell
+from dpfp_pytorch import DPFPCell, DPFPAttention
 
 nu = 1
 dim = 128
@@ -12,3 +12,9 @@ x, W = m.forward(x, W)
 
 print(x.shape, W.shape)
 
+
+m = DPFPAttention(dim)
+x = torch.randn(1, 16, dim)
+m.forward(x)
+
+print(x.shape)
