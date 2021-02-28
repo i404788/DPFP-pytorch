@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
   name = 'dpfp-pytorch',
   packages = find_packages(exclude=['examples']),
-  version = '0.2.0',
+  version = '0.3.0',
   license='BSD',
   description = 'DPFP - Pytorch',
   author = 'Ferris Kwaijtaal',
