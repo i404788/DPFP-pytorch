@@ -7,12 +7,17 @@ import torch
 from torch.utils.cpp_extension import load
 # Just in time import
 
+import os
+path = os.path.abspath(__file__)
+dir_path = os.path.dirname(path)
+cuda_file = os.path.join(dir_path, "fast_weight_cuda.cu")
+
 mod_causal_dot_product_cuda = load(
     name="fast_weight_forward",
-    sources=["fast_weight_cuda.cu"], verbose=True)
+    sources=[cuda_file],verbose=True)
 mod_causal_dot_backward_cuda = load(
     name="fast_weight_backward",
-    sources=["fast_weight_cuda.cu"], verbose=True)
+    sources=[cuda_file], verbose=True)
 
 
 causal_dot_product_cuda = mod_causal_dot_product_cuda.fast_weight_forward
