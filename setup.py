@@ -19,6 +19,7 @@ setup(
     'einops>=0.3',
     'torch>=1.4',
   ],
+  include_package_data=True,
   classifiers=[
     'Development Status :: 4 - Beta',
     'Intended Audience :: Developers',
