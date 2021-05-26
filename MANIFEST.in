@@ -1,0 +1,1 @@
+include dpfp_pytorch/fast_weight_cuda.cu
