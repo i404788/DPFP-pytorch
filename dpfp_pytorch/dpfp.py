@@ -71,7 +71,7 @@ class PrePostNorm(nn.Module):
         if not self.pre:
             x = self.norm(x)
         if len(args):
-            return x, *args
+            return (x, *args)
         return x
 
 
