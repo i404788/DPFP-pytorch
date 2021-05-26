@@ -8,9 +8,13 @@ from functools import partial
 
 def identity(x): return x
 
-
-if torch.cuda.is_available():
-    from .cuda import fast_weight_memory
+FAST_CUDA = False
+try:
+    if torch.cuda.is_available():
+        from .cuda import fast_weight_memory
+        FAST_CUDA = True
+except:
+    print("Failed to load cuda version, falling back to naive impl.")
 
 
 def dpfp(x, nu=1):
@@ -114,7 +118,7 @@ class DPFPAttention(nn.Module):
         q, k = map(lambda t: t / t.sum(-1, keepdim=True), (q, k))
 
         # Apply update function
-        if 'cuda' in str(x.device):
+        if 'cuda' in str(x.device) and FAST_CUDA:
             # Optimized cuda kernel
             out = fast_weight_memory(q, k, v, beta, W)
         else:
